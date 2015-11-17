@@ -3,7 +3,7 @@ code for "A Likelihood-based Approach for Multivariate One-Sided Tests With Miss
 
 
 ################
-Steps to replicate results of real data analysis
+=== Steps to replicate results of real data analysis
 ################
 
 1. Run the r code in "real_data_analysis.r" to prepare the input data files required by the C++ program.
@@ -15,7 +15,7 @@ Steps to replicate results of real data analysis
 Note: steps 2 and 3 are repeated for each of the four intervention groups.
 
 ################
-Steps to replicate results of simulation studies
+=== Steps to replicate results of simulation studies
 ################
 
 1. Set up the simulation configuration file "simulation_configurations.txt" ( or "simulation_configurations_dim5.txt" for p=5)
@@ -26,7 +26,7 @@ Steps to replicate results of simulation studies
 
 
 ################
-file for Gaussian quadrature points and weights
+=== file for Gaussian quadrature points and weights
 ################
 
 The file "GH100.txt" contains the quadrature points and weights from the R package fastGHQuad. It is obtained in R by running the following code:
