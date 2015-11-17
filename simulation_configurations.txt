@@ -1,0 +1,38 @@
+// set up simulations under model estimated from the Zin Ex trial
+
+#### Number of simulation replication:
+2000
+
+#### Sample size:
+130
+
+#### True value of mu:
+1,2
+
+#### True value of Sigma: ( var(xi1),var(xi2),cov(xi1,xi2) )
+150,40,50
+
+### True value of alpha's governing the missing mechanism: (alpha01, alpha11, alpha02, alpha12,alphaMAR)
+-3.606623,3,-3.606623,3,0
+
+#### An integer seed (for reproducibility)
+88
+
+### Convergence criteria in terms of change in the log-likelihood
+1e-4
+
+### For bobyqa method, specify the maximum number of likelihood evaluations before non-convergence is claimed
+30000
+
+### For newton, trust-region or bfgs methods, specify the maximum number of iterations before non-convergence is claimed
+90
+
+### Manual confirmation of simulation settings before running (Y,y or N,n)
+n
+
+
+ 
+
+
+
+ 
