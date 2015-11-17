@@ -1,0 +1,47 @@
+// set up paramters for one-sample multivariate one-sided test
+
+#### Number of simulation replication:
+2000
+
+#### Sample size:
+100
+
+#### Dimension: 
+5
+
+#### True value of mu:
+0,0,0,0,0
+
+#### True of rou in Sigma (Sigma has 1's on the diagnal and rou's on the off-diagnal):
+0.2
+
+#### Number of simulation replications in the calculation of chi-bar-weights (irrelevant when dim=2 as anlytical formula will be used)
+20000
+
+#### An integer seed (for reproducibility)
+77
+
+#### Missing mechanism (One of  MCAR, MAR or MNAR)
+MNAR
+
+#### Missing rates
+0.20,0.20,0.20,0.20,0.20,0.20
+
+### beta1 (degree of deviation from MCAR, it is set as 0 for MCAR)
+0
+
+### Convergence criteria in terms of change in the log-likelihood
+1e-4
+
+### Manual confirmation of simulation settings before running (Y,y or N,n)
+n
+
+### For bobyqa method, specify the maximum number of likelihood evaluations before non-convergence is claimed
+30000
+
+### For newton, trust-region or bfgs methods, specify the maximum number of iterations before non-convergence is claimed
+100
+
+
+
+
