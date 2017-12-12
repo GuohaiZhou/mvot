@@ -1,0 +1,62 @@
+library(minqa)
+set.seed(11)
+library(MASS)
+alpha01 = 0.4; alpha11=-0.5
+alpha02 = 0.4; alpha12=3.5
+sample = mvrnorm(n = 50, mu=c(1,-1), Sigma=diag(2), tol = 1e-6, empirical = FALSE, EISPACK = FALSE)
+set_missing_indicator = function(x)
+{
+  prob_miss_xi1 <- 1/(1+exp(-alpha01-alpha11*x[1]))
+  
+  if(runif(1)<prob_miss_xi1) mis_xi1 <- 1 else mis_xi1 <- 0
+  
+  prob_miss_xi2 <- 1/(1+exp(-alpha02-alpha12*x[2]))
+  
+  if(runif(1)<prob_miss_xi2) mis_xi2<-1 else mis_xi2<-0   
+  c(mis_xi1,mis_xi2)
+}
+
+missing_indicator <- t(apply(sample,1,set_missing_indicator))
+
+library(data.table)
+data <- as.data.table(cbind(sample,missing_indicator))
+names(data) <- c('xi1','xi2','ri1','ri2')
+ 
+theta = c(0,0,0,0,0,0)
+n = nrow(data)
+
+library(fastGHQuad)
+rule9 <- gaussHermiteData(9)
+
+minus_obs_log_like <- function(theta)
+{ 
+  lobs=0
+  for(i in 1:n)
+  {
+    if( abs(data[i,ri1]-1)>0.5 & abs(data[i,ri2]-1)>0.5 ) 
+      # both xi1 and xi2 are observed 
+       li = -(data[i,xi1]-theta[1])^2/2-(data[i,xi2]-theta[2])^2/2 -log( 1 + exp(theta[3]+theta[4]*data[i,xi1]) )-log( 1 + exp(theta[5]+theta[6]*data[i,xi2]) )
+        
+    if( abs(data[i,ri1]-1)<0.5 & abs(data[i,ri2]-1)>0.5 ) 
+      # xi1 is missing, xi2 is observed 
+      li = log( ghQuad(function(x) 1/( 1 + exp(-theta[3]-theta[4]*(sqrt(2)*x + theta[1] )) ), rule9) ) -(data[i,xi2]-theta[2])^2/2-log( 1 + exp(theta[5]+theta[6]*data[i,xi2]) )
+      
+    if( abs(data[i,ri1]-1)>0.5 & abs(data[i,ri2]-1)<0.5 )
+      # xi1 is observed, xi2 is missing 
+      li = log( ghQuad(function(x) 1/( 1 + exp(-theta[5]-theta[6]*(sqrt(2)*x + theta[2] )) ), rule9) ) -(data[i,xi1]-theta[1])^2/2-log( 1 + exp(theta[3]+theta[4]*data[i,xi1]) )
+        
+        
+    if( abs(data[i,ri1]-1)<0.5 & abs(data[i,ri2]-1)<0.5 ) 
+      # both xi1 and xi2 are missing
+      li = log( ghQuad(function(x) 1/( 1 + exp(-theta[3]-theta[4]*(sqrt(2)*x + theta[1] )) ), rule9) * ghQuad(function(x) 1/( 1 + exp(-theta[5]-theta[6]*(sqrt(2)*x + theta[2] )) ), rule9) )
+      
+    lobs = lobs +li
+  }
+  -lobs
+}
+minus_obs_log_like(theta)
+
+theta_initial = c(-1,-2,alpha01,alpha11,
+alpha02,alpha12)
+
+a1 = bobyqa(theta_initial, minus_obs_log_like, lower = rep(-Inf,6), upper =c(0,0,Inf,Inf,Inf,Inf), control=list(iprint=5,rhoend=0.0001,rhobeg=1))  
